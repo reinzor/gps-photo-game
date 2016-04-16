@@ -2,9 +2,18 @@ html, body {
   height: 100%; 
 }
 
+#header {
+  background-color: #F00A73 !important;
+  border: none;
+}
+
+#header a {
+  color: white;
+}
+
 #main {
   position: relative; /* 1. Position relative because of absolute child elements */
-  padding: 44px 0 0 0; /* 2. Using padding to define strech-able space */
+  padding: 50px 0 40px 0; /* 2. Using padding to define strech-able space */
   box-sizing: border-box; /* 3. Box sizing to subtract padding and border from the 100% height of this element when child elements define 100% height */
     height: 100%;
 }
@@ -18,4 +27,29 @@ html, body {
   height: 100%;
   margin: 0px;
   padding: 0px
+}
+
+#footer {
+  padding: 10px;
+  background-color: #006EB4 !important;
+}
+
+#footer a {
+  color: white;
+}
+
+* input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
 }

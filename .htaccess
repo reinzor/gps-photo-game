@@ -1,0 +1,11 @@
+AuthUserFile /home/deb88327/domains/baasvanhorstaandemaas.nl/public_html/eindspel/.htpasswd
+AuthName "Admin area"
+AuthType Basic
+
+<Files "index.html">
+    require valid-user
+</Files>
+
+<Files "admin.php">
+    require valid-user
+</Files>

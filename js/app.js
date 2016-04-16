@@ -1,5 +1,31 @@
 // - - - - - - - - - SETUP (Init)- - - - - - - - - - -
 
+// Check if photo upload is supported
+if (PhotoUpload.isUploadSupported()) {
+    console.log("Photo upload is supported!");
+}
+else {
+    alert("Photo upload is not supported!");
+}
+
+// Team selection
+var selectedTeam = null;
+if (!selectedTeam) {
+    $("#team-modal").show("modal");
+}
+Data.teams.forEach(function(team) {
+    $('#team-select').append($("<option></option>").text(team)); 
+});
+$("#team-select").change(function() {
+    selectedTeam = $("#team-select option:selected").text();
+    $("#team-name").text(selectedTeam);
+    $("#team-modal").hide("modal");
+    GeoTracker.startTracker()
+});
+$("#team-name").click(function() {
+    $("#team-modal").show("modal");
+});
+
 var distance_meter_treshold = 15;
 
 // Setup map and loop over the data points and add to map 
@@ -12,6 +38,8 @@ Data.points.forEach(function(point) {
 
 // Register continuous callback of GPS tracker
 GeoTracker.registerPositionCallback(function(lat, long) {
+    PositionUpload.sendPosition(selectedTeam, lat, long);
+
     // Update distances and get nearest point
     var nearestPoint = null;
     for (var i = 0; i < Data.points.length; ++i) {
@@ -32,15 +60,50 @@ GeoTracker.registerPositionCallback(function(lat, long) {
         $("#distance").html(Helpers.distanceToString(nearestPoint.distance));
 
         // Check if the nearest point is closer than distance treshold
-        if (nearestPoint.distance < distance_meter_treshold) 
+        if (nearestPoint.distance < distance_meter_treshold) {
             userAtPoint(nearestPoint);
+        } else {
+            userNotAtPoint();
+        }            
     }
 });
+
+// -- Interval GUI update from server --
+setInterval(function() {
+    $.ajax({
+        type: 'GET',
+        url: '/get_uploads.php',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            var count = 0;
+            data.forEach(function(file) {
+                if (file.startsWith(Helpers.sanitizeFileName(selectedTeam))) {
+                    count++;
+                }
+            });
+            $("#upload-count").text(count);
+        }
+    });
+}, 5000);
 
 // - - - - - - - Behavior @ Point (At Point) - - - - - - -
 
 function userAtPoint(point)
 {
-    console.log("We are at a point!");
-    console.log(point);
+    // Update Photo upload
+    PhotoUpload.fileName = selectedTeam + "_" + point.name;
+
+    // Update modal
+    $("#title").text(point.title);
+    $("#description").text(point.description);
+    $("#image").text(point.image);
+
+    // Show modal
+    $("#point-modal").show("modal");
+}
+
+function userNotAtPoint()
+{
+    $("#point-modal").hide("modal");
 }

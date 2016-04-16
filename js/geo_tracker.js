@@ -27,7 +27,9 @@ GeoTracker = {
   registerPositionCallback: function(latLongUpdateCallback) {
     // positionUpdateCallbackFunction bind
     this.latLongUpdateCallback = latLongUpdateCallback
+  },
 
+  startTracker: function() {
     // Variables for navigator
     var options = this.geoOptions;
     var succesCallback = this.geoSuccess;
@@ -35,9 +37,6 @@ GeoTracker = {
     var intervalTimeout = 1000;
 
     // Try setup every second
-    var interval = setInterval(function() {
-      var tracker = navigator.geolocation.watchPosition(succesCallback, errorCallback, options);
-      clearInterval(interval);
-    }, intervalTimeout);
+    var tracker = navigator.geolocation.watchPosition(succesCallback, errorCallback, options);
   }
 }

@@ -26,7 +26,7 @@ header('Content-type: application/json');
 if ($name && $base64_string && is_string($name) && is_string($base64_string)) {
     $name = sanitizeFileName($name);
 
-    $output_file = getcwd() . "/upload/" . $name . "_" . date('Y-m-d_H-i-s') . ".jpg";
+    $output_file = getcwd() . "/upload/" . date('Y-m-d_H-i-s') . "_" . $name . ".jpg";
 
     $ifp = fopen($output_file, "wb"); 
 

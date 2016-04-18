@@ -1,3 +1,26 @@
+<?php
+include('./db_connection.php');
+
+$id = mysql_real_escape_string($_GET["id"]);
+$player = null;
+if ($id)
+{
+    $result = mysql_query("SELECT * FROM players WHERE id='".$id."'");
+    if ($result && mysql_num_rows($result) == 1) 
+    {
+        $player = mysql_fetch_assoc($result);
+    }
+}
+
+if (!$player)
+{
+  echo '<img src="http://baasvanhorstaandemaas.nl/wp-content/uploads/2015/11/logo3.png" /><br />&nbsp;<br />';
+  echo '<img src="https://cdn.meme.am/instances/64789401.jpg" />';
+  die();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -33,24 +56,6 @@
           <div id="map-canvas"> 
           </div>
       </div>
-      <div class="modal" id="team-modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Kies jouw team!</h4>
-            </div>
-            <div class="modal-body">
-              <div class="form-group">
-                <label for="team-select">Kies jouw team!</label>
-                <select class="form-control" id="team-select">
-                </select>
-              </div>
-            </div>
-            <div class="modal-footer">
-            </div>
-          </div>
-        </div>
-      </div>
       <div id="point-modal" class="modal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -71,7 +76,7 @@
       </div><!-- /.modal -->
     </div>
     <div id="footer" class="col-xs-12 navbar-inverse navbar-fixed-bottom">
-        <div class="col-xs-6 text-center"><a href="#"><i class="glyphicon glyphicon-user"></i> <span id="team-name">Kies jouw team!</span></a></div>
+        <div class="col-xs-6 text-center"><a href="#"><i class="glyphicon glyphicon-user"></i> <span id="player" data="<? echo $player['id']; ?>"><? echo $player['name'] ?></span></a></div>
         <div class="col-xs-6 text-center"><a href="#"><i class="glyphicon glyphicon-upload"></i> <span id="upload-count">0</span> foto's</a></div>
       </div>
     </div>
@@ -87,13 +92,15 @@
 
     <!-- Custom JS -->
     <script src="js/helpers.js"></script>
+    <script src="js/colors.js"></script>
 
     <script src="js/google_maps.js"></script>
     <script src="js/geo_tracker.js"></script>
     <script src="js/photo_upload.js"></script>
-    <script src="js/position_upload.js"></script>
 
-    <script src="js/data.js"></script>
+    <script src="js/player_api.js"></script>
+    <script src="js/point_api.js"></script>
+
     <script src="js/app.js"></script>
 
   </body>

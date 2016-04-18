@@ -24,6 +24,16 @@ Helpers = {
         return Math.round( distance * 10 ) / 10 + " meter"
     },
 
+    shuffleArray: function(a) {
+        var j, x, i;
+        for (i = a.length; i; i -= 1) {
+            j = Math.floor(Math.random() * i);
+            x = a[i - 1];
+            a[i - 1] = a[j];
+            a[j] = x;
+        }
+    },
+
     sanitizeFileName: function(unsafe) {
       return unsafe
         .replace(/ /gi, '_')

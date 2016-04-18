@@ -11,7 +11,9 @@ GoogleMaps = {
     // our formatted marker data objects
     markerIds: [],
 
-    geoPosition: null,
+    geoPositions: {},
+
+    colors: [],
  
     // add a marker given our formatted marker data object
     addMarker: function(id, lat, long, title) {
@@ -21,7 +23,7 @@ GoogleMaps = {
             map: this.map,
             title: title,
             // animation: google.maps.Animation.DROP,
-            icon:'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+            icon:'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|F00A73'
         });
         this.latLngs.push(gLatLng);
         this.markers.push(gMarker);
@@ -46,7 +48,9 @@ GoogleMaps = {
         console.log("[+] Intializing Google Maps...");
         var mapOptions = {
             zoom: 12,
-            mapTypeId: google.maps.MapTypeId.HYBRID
+            mapTypeId: google.maps.MapTypeId.HYBRID,
+            streetViewControl: false,
+            mapTypeControl: false,
         };
  
         this.map = new google.maps.Map(
@@ -56,26 +60,31 @@ GoogleMaps = {
 
     },
 
-    updateGeoPosition: function(lat,long) {
+    updateGeoPosition: function(lat, long, key) {
         var LAT_LONG = new google.maps.LatLng(lat,long);
 
-        if (!this.geoPosition) {
-            this.geoPosition = new google.maps.Marker({
+        if (!this.geoPositions[key]) {
+            if (key == "me") {
+                var color = "blue";
+            } else {
+                var color = Colors.random();
+            }
+            this.geoPositions[key] = new google.maps.Marker({
                 position: LAT_LONG, 
                 map: this.map, 
                 icon: {
                     path: google.maps.SymbolPath.CIRCLE,
                     fillOpacity : 0.2,
-                    fillColor : 'blue',
+                    fillColor : color,
                     scale: 20,
                     strokeWeight : 1,
                     strokeOpacity : 1.0,
-                    strokeColor: 'blue',
+                    strokeColor: color
                 },
             });
-            this.geoPosition.setMap(this.map);
+            this.geoPositions[key].setMap(this.map);
         } else {
-            this.geoPosition.setPosition(LAT_LONG);              
+            this.geoPositions[key].setPosition(LAT_LONG);              
         }
     }
 }

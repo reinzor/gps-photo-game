@@ -35,9 +35,6 @@ $( document ).ready(function() {
         // Select player id
         var playerId = $("#player").attr("data");
 
-        // Start geotracker
-        GeoTracker.startTracker();
-
         var distance_meter_treshold = 15;
 
         // Setup map and loop over the data points and add to map 
@@ -79,6 +76,9 @@ $( document ).ready(function() {
                 }            
             }
         });
+
+        // Start geotracker
+        GeoTracker.startTracker();
 
         // -- Interval GUI update from server --
         setInterval(function() {

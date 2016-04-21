@@ -110,7 +110,7 @@ Eindspel Baas van Horst aan de Maas 2015
     }
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result)) {
-            echo '<li>['.$row['id'].'] '.$row['name'].' ('.$row['longitude'].', '.$row['latitude'].') - <img src="'.$row['image'].'" width="200px" /> <a href="/admin.php?action=delete_point&id='.$row['id'].'">Delete</a></li>';
+            echo '<li>['.$row['id'].'] '.$row['name'].': '.$row['description'].' - ('.$row['longitude'].', '.$row['latitude'].') - <img src="'.$row['image'].'" width="200px" /> <a href="/admin.php?action=delete_point&id='.$row['id'].'">Delete</a></li>';
         }
     }
     ?>

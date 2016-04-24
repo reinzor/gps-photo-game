@@ -1,4 +1,4 @@
-PhotoUpload = {
+UploadAPI = {
     isUploadSupported: function() {
         if (navigator.userAgent.match(/(Android (1.0|1.1|1.5|1.6|2.0|2.1))|(Windows Phone (OS 7|8.0))|(XBLWP)|(ZuneWP)|(w(eb)?OSBrowser)|(webOS)|(Kindle\/(1.0|2.0|2.5|3.0))/)) {
             return false;
@@ -6,10 +6,8 @@ PhotoUpload = {
         return true;
     },
     getOrientation: function(file, callback) {
-        console.log("getOrientation");
       var reader = new FileReader();
       reader.onload = function(e) {
-        console.log("onload reader");
 
         var view = new DataView(e.target.result);
         if (view.getUint16(0, false) != 0xFFD8) return callback(-2);
@@ -34,16 +32,13 @@ PhotoUpload = {
       };
       reader.readAsArrayBuffer(file.slice(0, 64 * 1024));
     },
-    readFile: function(file) {
-        console.log("Readfile");
+    uploadFile: function(file, playerId, pointId, callbackFunction) {
         // Get the orientation
-        window.PhotoUpload.getOrientation(file, function(orientation) {
-            console.log("getOrientation callback");
+        window.UploadAPI.getOrientation(file, function(orientation) {
             var reader = new FileReader();
 
             reader.onloadend = function () {
-                console.log("callin process file");
-                window.PhotoUpload.processFile(reader.result, file.type, orientation);
+                window.UploadAPI.processFile(reader.result, file.type, orientation, playerId, pointId, callbackFunction);
             }
 
             reader.onerror = function () {
@@ -53,7 +48,7 @@ PhotoUpload = {
             reader.readAsDataURL(file);
         });
     },
-    processFile: function(dataURL, fileType, orientation) {
+    processFile: function(dataURL, fileType, orientation, playerId, pointId, callbackFunction) {
         var maxWidth = 800;
         var maxHeight = 800;
 
@@ -113,56 +108,48 @@ PhotoUpload = {
             
             dataURL = canvas.toDataURL(fileType);
 
-            window.PhotoUpload.sendFile(dataURL);
+            window.UploadAPI.sendFile(dataURL, playerId, pointId, callbackFunction);
         };
 
         image.onerror = function () {
             alert('There was an error processing your file!');
         };
     },
-    sendFile: function(fileData) {
+    sendFile: function(fileData, playerId, pointId, callbackFunction) {
         var formData = new FormData();
 
         formData.append('imageData', fileData);
-        formData.append('name', window.PhotoUpload.fileName);
+        formData.append('playerId', playerId);
+        formData.append('pointId', pointId);
+
+        console.log("Sending file for player, point", playerId, pointId);
 
         $.ajax({
             type: 'POST',
-            url: '/upload.php',
+            url: '/upload_api.php',
             data: formData,
             contentType: false,
             processData: false,
             success: function (data) {
-                if (data.success) {
-                    alert('Foto succesvol geupload!');
-                } else {
-                    alert('Oeps, iets ging er fout bij je foto upload!');
-                }
+                callbackFunction(data);
             },
             error: function (data) {
-                alert('Oeps, iets ging er fout bij je foto upload! Ajax error');
+                alert('Oeps, kan de upload service niet bereiken :(. Probeer opnieuw!');
+            }
+        });
+    },
+    get: function(callbackFunction) {
+        $.ajax({
+            type: 'GET',
+            url: '/upload_api.php',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                callbackFunction(data);
+            },
+            error: function (data) {
+                alert('Oeps, kan de upload service niet bereiken :(. Probeer opnieuw!');
             }
         });
     }
-}
-
-// Watch the #file for upload
-
-if (window.File && window.FileReader && window.FormData) {
-    var $inputField = $('#file');
-
-    $inputField.on('change', function (e) {
-        var file = e.target.files[0];
-
-        if (file) {
-            if (/^image\//i.test(file.type)) {
-                console.log("Calling read file");
-                PhotoUpload.readFile(file);
-            } else {
-                alert('Not a valid image!');
-            }
-        }
-    });
-} else {
-    alert("File upload is not supported!");
 }

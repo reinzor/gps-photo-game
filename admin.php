@@ -76,7 +76,7 @@ Eindspel Baas van Horst aan de Maas 2015
 <h1><a href="admin.php">Admin page Eindspel Baas van Horst aan de Maas 2016</a></h1>
 <h2>Players</h2>
     
-<ul>
+<ol>
     <?php
     // Select all qr teams
     $result = mysql_query("SELECT * FROM players");
@@ -86,11 +86,11 @@ Eindspel Baas van Horst aan de Maas 2015
     }
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result)) {
-            echo '<li>['.$row['id'].'] '.$row['name'].' ('.$row['longitude'].', '.$row['latitude'].') - <a href="/?id='.$row['id'].'">Page</a> <a href="/admin.php?action=delete_player&id='.$row['id'].'">Delete</a></li>';
+            echo '<li>['.$row['id'].'] '.$row['name'].' ('.$row['latitude'].', '.$row['longitude'].') - <a href="/?id='.$row['id'].'">Page</a> <a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_player&id='.$row['id'].'">Delete</a></li>';
         }
     }
     ?>
-</ul>
+</ol>
 
 <form action="admin.php" method="GET">
     <input type="text" name="name">
@@ -100,7 +100,7 @@ Eindspel Baas van Horst aan de Maas 2015
 
 <h2>Points</h2>
     
-<ul>
+<ol>
     <?php
     // Select all qr teams
     $result = mysql_query("SELECT * FROM points");
@@ -110,11 +110,11 @@ Eindspel Baas van Horst aan de Maas 2015
     }
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result)) {
-            echo '<li>['.$row['id'].'] '.$row['name'].': '.$row['description'].' - ('.$row['longitude'].', '.$row['latitude'].') - <img src="'.$row['image'].'" width="200px" /> <a href="/admin.php?action=delete_point&id='.$row['id'].'">Delete</a></li>';
+            echo '<li>['.$row['id'].'] '.$row['name'].': '.$row['description'].' - ('.$row['latitude'].', '.$row['longitude'].') - <img src="'.$row['image'].'" width="200px" /> <a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_point&id='.$row['id'].'">Delete</a></li>';
         }
     }
     ?>
-</ul>
+</ol>
 
 <form action="admin.php" method="GET">
     <input type="text" name="name" placeholder="name">

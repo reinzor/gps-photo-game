@@ -40,6 +40,7 @@ else
     $rows = array();
     while($r = mysql_fetch_assoc($result)) {
         $rows[] = $r;
+        //echo $r['name'] . "-" . mb_detect_encoding($r['name']) . "\n";
     }
-    echo json_encode($rows);
+    echo json_encode(utf8_converter($rows));
 }

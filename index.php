@@ -47,7 +47,7 @@ if (!$player)
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="header">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#" id="distance">Baas 2016 - Eindspel</a>
+          <a class="navbar-brand" href="#" id="distance">Geen positie</a>
         </div>
       </div>
     </div>
@@ -56,11 +56,12 @@ if (!$player)
           <div id="map-canvas"> 
           </div>
       </div>
-      <div id="point-modal" class="modal">
+      <div id="point-modal" class="modal" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title" id="title">Title</h4>
+              <button type="button" id="close-point-modal" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="title">Modal title</h4>
             </div>
             <div class="modal-body">
               <a href="#" class="thumbnail">
@@ -96,8 +97,8 @@ if (!$player)
 
     <script src="js/google_maps.js"></script>
     <script src="js/geo_tracker.js"></script>
-    <script src="js/photo_upload.js"></script>
 
+    <script src="js/upload_api.js"></script>
     <script src="js/player_api.js"></script>
     <script src="js/point_api.js"></script>
 

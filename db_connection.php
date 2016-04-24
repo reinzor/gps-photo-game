@@ -5,6 +5,7 @@ $username = "deb88327_baas";
 $password = "banana";
 $databasename = "deb88327_eindspel";
 
+mysql_set_charset("utf8");
 $conn = mysql_connect($servername, $username, $password);
 if (!$conn) {
     die('Not connected : ' . mysql_error());
@@ -33,7 +34,32 @@ function isToken($token)
     }
 }
 
-function generateUniqueToken($number)
+function utf8_converter($array)
+{
+    array_walk_recursive($array, function(&$item, $key){
+        if(!mb_detect_encoding($item, 'utf-8', true)){
+            $item = utf8_encode($item);
+        }
+    });
+    return $array;
+}
+
+function sanitizeFileName($dangerous_filename, $platform = 'Unix')
+{
+    if (in_array(strtolower($platform), array('unix', 'linux'))) {
+        // our list of "dangerous characters", add/remove characters if necessary
+        $dangerous_characters = array(" ", '"', "'", "&", "/", "\\", "?", "#");
+    }
+    else {
+        // no OS matched? return the original filename then...
+        return $dangerous_filename;
+    }
+
+    // every forbidden character is replace by an underscore
+    return str_replace($dangerous_characters, '_', $dangerous_filename);
+}
+
+function generateToken($number)
 {
     $arr = array('a', 'b', 'c', 'd', 'e', 'f',
                  'g', 'h', 'i', 'j', 'k', 'l',
@@ -50,6 +76,12 @@ function generateUniqueToken($number)
         $index = rand(0, count($arr) - 1);
         $token .= $arr[$index];
     }
+    return $token;
+}
+
+function generateUniqueToken($number)
+{
+    $token = generateToken($number);
 
     if (isToken($token)) {
         return generateUniqueToken($number);

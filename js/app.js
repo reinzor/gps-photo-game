@@ -1,8 +1,8 @@
 Data = {
     points: [],
-    addPoint: function(name, lat, long, description, image) {
+    addPoint: function(name, lat, long, description, image, id) {
         this.points.push({
-            "id": this.points.length,
+            "id": id,
             "name": name,
             "position": {
                 "latitude": lat,
@@ -19,13 +19,13 @@ Data = {
 $( document ).ready(function() {
     PointAPI.get(function(data) {
         data.forEach(function(point) {
-            Data.addPoint(point.name, point.latitude, point.longitude, point.description, point.image);
+            Data.addPoint(point.name, point.latitude, point.longitude, point.description, point.image, point.id);
         });
 
         // - - - - - - - - - SETUP (Init)- - - - - - - - - - -
 
         // Check if photo upload is supported
-        if (PhotoUpload.isUploadSupported()) {
+        if (UploadAPI.isUploadSupported()) {
             console.log("Photo upload is supported!");
         }
         else {
@@ -34,8 +34,9 @@ $( document ).ready(function() {
 
         // Select player id
         var playerId = $("#player").attr("data");
+        var pointId = -1;
 
-        var distance_meter_treshold = 15;
+        var distance_meter_treshold = 5;
 
         // Setup map and loop over the data points and add to map 
         GoogleMaps.initialize("map-canvas");
@@ -80,31 +81,12 @@ $( document ).ready(function() {
         // Start geotracker
         GeoTracker.startTracker();
 
-        // -- Interval GUI update from server --
-        setInterval(function() {
-            $.ajax({
-                type: 'GET',
-                url: '/get_uploads.php',
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    var count = 0;
-                    data.forEach(function(file) {
-                        if (file.includes(playerId)) {
-                            count++;
-                        }
-                    });
-                    $("#upload-count").text(count);
-                }
-            });
-        }, 5000);
-
         // - - - - - - - Behavior @ Point (At Point) - - - - - - -
 
         function userAtPoint(point)
         {
-            // Update Photo upload
-            PhotoUpload.fileName = playerId + "_" + $("#player").text() + "____" + point.name;
+            // Update pointId
+            pointId = point.id;
 
             // Update modal
             $("#title").text(point.name);
@@ -113,11 +95,44 @@ $( document ).ready(function() {
 
             // Show modal
             $("#point-modal").show("modal");
+
+            // Make sure user can hide model
+            $("#close-point-modal").click(function() {
+                $("#point-modal").hide("modal");
+            });
         }
 
         function userNotAtPoint()
         {
             $("#point-modal").hide("modal");
+        }
+
+        // Watch the #file for upload
+
+        if (window.File && window.FileReader && window.FormData) {
+            var $inputField = $('#file');
+
+            $inputField.on('change', function (e) {
+                var file = e.target.files[0];
+
+                if (file) {
+                    if (/^image\//i.test(file.type)) {
+                        UploadAPI.uploadFile(file, playerId, pointId, function(data) {
+                            if (data["success"]) {
+                                $("#upload-count").text(data["num_uploads"]);
+                                alert("Foto succesvol geupload!");
+                            } else {
+                                alert("Er is iets fout gegaan :(");
+                                alert(data);
+                            }
+                        });
+                    } else {
+                        alert('Not a valid image!');
+                    }
+                }
+            });
+        } else {
+            alert("File upload is not supported!");
         }
     });
 });

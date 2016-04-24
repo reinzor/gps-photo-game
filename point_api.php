@@ -16,4 +16,5 @@ $rows = array();
 while($r = mysql_fetch_assoc($result)) {
     $rows[] = $r;
 }
-echo json_encode($rows);
+
+echo json_encode(utf8_converter($rows));

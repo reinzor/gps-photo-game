@@ -66,10 +66,14 @@ html, body {
    column-gap:           0px;
 }
 
-#photos img {
+#photos div {
   /* Just in case there are inline attributes */
   width: 100% !important;
-  height: auto !important;
+  overflow: hidden;
+  display: inline-block;
+  background-size: cover !important;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 @media (max-width: 1200px) {
@@ -99,4 +103,23 @@ html, body {
   -webkit-column-count: 1;
   column-count:         1;
   }
+}
+
+th.rotate {
+  /* Something you can count on */
+  height: 140px;
+  white-space: nowrap;
+}
+
+th.rotate > div {
+  transform: 
+    /* Magic Numbers */
+    translate(25px, 51px)
+    /* 45 is really 360 - 45 */
+    rotate(315deg);
+  width: 30px;
+}
+th.rotate > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
 }

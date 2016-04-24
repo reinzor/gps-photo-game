@@ -1,7 +1,7 @@
 // A $( document ).ready() block.
 $( document ).ready(function() {
     // Check if photo upload is supported
-    if (PhotoUpload.isUploadSupported()) {
+    if (UploadAPI.isUploadSupported()) {
         alert("Photo upload is supported!");
     }
 

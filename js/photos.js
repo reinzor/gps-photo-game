@@ -6,6 +6,9 @@ $(document).ready(function() {
     var height_max = 400;
 
     var images = [];
+    var filenames = [];
+
+    var colors = ['red', 'blue', 'green', 'white', 'black'];
 
     function getRandomSize(min, max) {
         return Math.round(Math.random() * (max - min) + min);
@@ -13,23 +16,26 @@ $(document).ready(function() {
 
     // -- Interval GUI update from server (locations of players) --
     setInterval(function() {
-        $.ajax({
-            type: 'GET',
-            url: '/get_uploads.php',
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                var count = 0;
-                data.forEach(function(image) {
-                    count++;
-                    if (images.indexOf(image) == -1)
-                    {
-                        images.push(image)
-                        $('#photos').prepend('<img src="/upload/'+image+'" alt="'+image+'">');
-                    }
-                });
-                $("#photo-count").text(count);
-            }
+        UploadAPI.get(function(data) {
+            var count = 0;
+            data.forEach(function(image) {
+                count++;
+                if (filenames.indexOf(image.filename) == -1)
+                {
+                    filenames.push(image.filename);
+                    images.push(image);
+
+                    var height = getRandomSize(200, 400);
+                    
+                    var color = colors[Math.floor(Math.random()*colors.length)];
+
+                    var html = '<div style="height: '+height+'px; background-image: url(/upload/'+image.filename+');">';
+                    html    += '</div>';
+
+                    $('#photos').prepend(html);
+                }
+            });
+            $("#photo-count").text(count);
         });
-    }, 1000);
+    }, 5000);
 });

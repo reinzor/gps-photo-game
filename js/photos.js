@@ -29,7 +29,8 @@ $(document).ready(function() {
                     
                     var color = colors[Math.floor(Math.random()*colors.length)];
 
-                    var html = '<div style="height: '+height+'px; background-image: url(/upload/'+image.filename+');">';
+                    var html = '<div>';
+                    html    += '<img src="/upload/'+image.filename+'" />';
                     html    += '</div>';
 
                     $('#photos').prepend(html);

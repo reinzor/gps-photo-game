@@ -2,6 +2,7 @@
 include('./db_connection.php');
 
 $id = mysql_real_escape_string($_GET["id"]);
+$logout = mysql_real_escape_string($_GET["logout"]);
 $player = null;
 if ($id)
 {
@@ -9,6 +10,34 @@ if ($id)
     if ($result && mysql_num_rows($result) == 1) 
     {
         $player = mysql_fetch_assoc($result);
+
+        if ($player['open']) {
+          setcookie($id, $id, time()+7200);  /* expire in 2 hours */
+
+          // Update status to closed
+          mysql_query("UPDATE players SET open=0 WHERE id='".$id."'");  
+        } 
+        else
+        {
+          // Check if we have a cookie for the id, then it is always legit:
+          if (isset($_COOKIE[$id]))
+          {
+            if ($logout == TRUE)
+            {
+              // Update status to closed
+              mysql_query("UPDATE players SET open=1 WHERE id='".$id."'"); 
+
+              setcookie($id, "deleted", time() - 3600);
+              echo "Succesvol uitgelogd";
+              die();
+            }
+          }
+          else
+          {
+            echo "Er is al iemand ingelogd met dit ID!";
+            die();
+          }
+        }
     }
 }
 
@@ -46,8 +75,11 @@ if (!$player)
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="header">
       <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#" id="distance">Geen positie</a>
+        <div class="navbar-header" style="width: 100%">
+          <a class="navbar-brand" href="#" id="distance" style="float: left">Geen positie</a>
+          <a href="/?id=<? echo $id ?>&amp;logout=1" onclick="return confirm('Uitloggen?')" style="float: right; color: black;" type="button" class="btn btn-default navbar-btn">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
         </div>
       </div>
     </div>
@@ -71,6 +103,15 @@ if (!$player)
               <span class="btn btn-default btn-file">Upload foto!<input id="file" type="file" accept="image/*"></span>
             </div>
             <div class="modal-footer">
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+      <div id="uploaded-modal" class="modal" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              Upload succesvol!
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

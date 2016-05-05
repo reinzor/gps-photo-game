@@ -13,6 +13,14 @@ Data = {
             "distance": 1e9
         });
     },
+    removePoint: function(id) {
+        var i = Helpers.findWithAttr(this.points, 'id', id)
+        if (i >= 0) {
+            this.points.splice(i, 1);
+        } else {
+            console.log("Could not find point with id: " + id);
+        }
+    }
 }
 
 // A $( document ).ready() block.
@@ -36,7 +44,7 @@ $( document ).ready(function() {
         var playerId = $("#player").attr("data");
         var pointId = -1;
 
-        var distance_meter_treshold = 5;
+        var distance_meter_treshold = 6;
 
         // Setup map and loop over the data points and add to map 
         GoogleMaps.initialize("map-canvas");
@@ -120,7 +128,13 @@ $( document ).ready(function() {
                         UploadAPI.uploadFile(file, playerId, pointId, function(data) {
                             if (data["success"]) {
                                 $("#upload-count").text(data["num_uploads"]);
-                                alert("Foto succesvol geupload!");
+                                $("#point-modal").hide("modal");
+                                $("#uploaded-modal").show("modal");
+                                setTimeout(function() {
+                                    $("#uploaded-modal").hide("modal");
+                                }, 2000);
+                                Data.removePoint(pointId);
+                                GoogleMaps.removeMarker(pointId);
                             } else {
                                 alert("Er is iets fout gegaan :(");
                                 alert(data);

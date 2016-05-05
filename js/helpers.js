@@ -1,4 +1,12 @@
 Helpers = {  
+    findWithAttr: function(array, attr, value) {
+    for(var i = 0; i < array.length; i += 1) {
+            if(array[i][attr] === value) {
+                return i;
+            }
+        }
+    },
+
     getDistanceInMeter: function(lat1, lon1, lat2, lon2) {
       var R = 6371000; // Radius of the earth in m
       var dLat = this.deg2rad(lat2-lat1);  // deg2rad below

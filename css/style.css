@@ -69,11 +69,17 @@ html, body {
 #photos div {
   /* Just in case there are inline attributes */
   width: 100% !important;
+  height: auto !important;
   overflow: hidden;
   display: inline-block;
   background-size: cover !important;
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+#photos div img {
+  /* Just in case there are inline attributes */
+  width: 100% !important;
 }
 
 @media (max-width: 1200px) {

@@ -21,6 +21,26 @@ if ($action == "add_player" && $name)
     {
         echo json_encode(array('success' => false, 'message' => $conn->error));
     }
+} elseif($action == "open_all")
+{
+    if (mysql_query("UPDATE players SET open=1 ") === TRUE)
+    {
+        echo json_encode(array('success' => true, 'message' => "Opened all teams!"));
+    }
+    else
+    {
+        echo json_encode(array('success' => false, 'message' => $conn->error));
+    }
+} elseif($action == "close_all")
+{
+    if (mysql_query("UPDATE players SET open=0") === TRUE)
+    {
+        echo json_encode(array('success' => true, 'message' => "Closed all teams!"));
+    }
+    else
+    {
+        echo json_encode(array('success' => false, 'message' => $conn->error));
+    }
 } elseif($action == "delete_player" && $id)
 {
     if (mysql_query("DELETE FROM players WHERE id='" . $id . "'") === TRUE)
@@ -51,6 +71,16 @@ if ($action == "add_player" && $name)
     {
         echo json_encode(array('success' => false, 'message' => $conn->error));
     }
+} elseif($action == "delete_all_uploads")
+{
+    if (mysql_query("DELETE FROM uploads") === TRUE)
+    {
+        echo json_encode(array('success' => true, 'message' => "Deleted all uploads"));
+    }
+    else
+    {
+        echo json_encode(array('success' => false, 'message' => $conn->error));
+    }
 }
 
 ?>
@@ -74,6 +104,23 @@ Eindspel Baas van Horst aan de Maas 2015
 <div class="container">
 
 <h1><a href="admin.php">Admin page Eindspel Baas van Horst aan de Maas 2016</a></h1>
+
+<h2>Different views</h2>
+
+<ul>
+    <li><a href="/map.html">Map</a></li>
+    <li><a href="/photos.html">Photos</a></li>
+    <li><a href="/stats.html">Stats</a></li>
+</ul> 
+
+<h2>Danger zone</h2>
+
+<ul>
+    <li><a onclick="return confirm('Delete all uploads??')" href="/admin.php?action=delete_all_uploads">Clear uploads</a></li>
+    <li><a onclick="return confirm('Sure?')" href="/admin.php?action=open_all">Open all teams</a> </li>
+    <li><a onclick="return confirm('Sure?')" href="/admin.php?action=close_all">Close all teams</a></li>
+</ul>   
+
 <h2>Players</h2>
     
 <ol>
@@ -86,7 +133,7 @@ Eindspel Baas van Horst aan de Maas 2015
     }
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result)) {
-            echo '<li>['.$row['id'].'] '.$row['name'].' ('.$row['latitude'].', '.$row['longitude'].') - <a href="/?id='.$row['id'].'">Page</a> <a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_player&id='.$row['id'].'">Delete</a></li>';
+            echo '<li>[['.$row['open'].']]['.$row['id'].'] '.$row['name'].' ('.$row['latitude'].', '.$row['longitude'].') - <a href="/?id='.$row['id'].'">Page</a> <a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_player&id='.$row['id'].'">Delete</a></li>';
         }
     }
     ?>

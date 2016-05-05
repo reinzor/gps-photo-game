@@ -33,6 +33,20 @@ GoogleMaps = {
 
         return gMarker;
     },
+
+    removeMarker: function(id) {
+        // Check if index exists
+        var i = this.markerIds.indexOf(id);
+        if (i == -1) {
+            console.log("No marker with id: " + id);
+        } else {
+            this.markers[i].setMap(null);
+            this.markers.splice(i, 1);
+            this.latLngs.splice(i, 1);
+            this.markerIds.splice(i, 1);
+            console.log("Removed marker with id: " + id);
+        }
+    },
  
     // calculate and move the bound box based on our markers
     calcBounds: function() {

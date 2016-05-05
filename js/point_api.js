@@ -1,8 +1,8 @@
 PointAPI = {
-    get: function(callback) {
+    get: function(playerId, callback) {
         $.ajax({
             type: 'GET',
-            url: '/point_api.php',
+            url: '/point_api.php?player_id=' + playerId,
             contentType: false,
             processData: false,
             success: function (data) {

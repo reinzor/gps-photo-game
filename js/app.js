@@ -25,7 +25,14 @@ Data = {
 
 // A $( document ).ready() block.
 $( document ).ready(function() {
-    PointAPI.get(function(data) {
+
+    // Select player id
+    var playerId = $("#player").attr("data");
+    var pointId = -1;
+
+    var distance_meter_treshold = 6;
+
+    PointAPI.get(playerId, function(data) {
         data.forEach(function(point) {
             Data.addPoint(point.name, point.latitude, point.longitude, point.description, point.image, point.id);
         });
@@ -39,12 +46,6 @@ $( document ).ready(function() {
         else {
             alert("Photo upload is not supported!");
         }
-
-        // Select player id
-        var playerId = $("#player").attr("data");
-        var pointId = -1;
-
-        var distance_meter_treshold = 6;
 
         // Setup map and loop over the data points and add to map 
         GoogleMaps.initialize("map-canvas");

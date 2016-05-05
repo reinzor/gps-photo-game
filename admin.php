@@ -123,21 +123,24 @@ Eindspel Baas van Horst aan de Maas 2015
 
 <h2>Players</h2>
     
-<ol>
+<table class="table">
+    <tr><th>#</ht><th>open</th><th>name</th><th>link</th><th>position</th><th>actions</th></tr>
     <?php
     // Select all qr teams
-    $result = mysql_query("SELECT * FROM players");
+    $result = mysql_query("SELECT * FROM players ORDER BY name");
     if (!$result) {
         echo 'Could not run query: ' . mysql_error();
         exit;
     }
     if (mysql_num_rows($result) > 0) {
+        $i = 0;
         while ($row = mysql_fetch_assoc($result)) {
-            echo '<li>[['.$row['open'].']]['.$row['id'].'] '.$row['name'].' ('.$row['latitude'].', '.$row['longitude'].') - <a href="/?id='.$row['id'].'">Page</a> <a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_player&id='.$row['id'].'">Delete</a></li>';
+            ++$i;
+            echo '<tr><td>'.$i.'</td><td>'.$row['open'].'</td><td>'.$row['name'].'</td><td>http://eindspel.baasvanhorstaandemaas.nl?id='.$row['id'].'</td><td><small>('.number_format($row['latitude'],2).', '.number_format($row['longitude'],2).')</small></td><td><a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_player&id='.$row['id'].'">Delete</a></td></tr>';
         }
     }
     ?>
-</ol>
+</table>
 
 <form action="admin.php" method="GET">
     <input type="text" name="name">
@@ -147,7 +150,8 @@ Eindspel Baas van Horst aan de Maas 2015
 
 <h2>Points</h2>
     
-<ol>
+<table class="table">
+    <tr><th>#</ht><th>name</th><th>description</th><th>position</th><th>image</th><th>actions</th></tr>
     <?php
     // Select all qr teams
     $result = mysql_query("SELECT * FROM points");
@@ -156,12 +160,14 @@ Eindspel Baas van Horst aan de Maas 2015
         exit;
     }
     if (mysql_num_rows($result) > 0) {
+        $i = 0;
         while ($row = mysql_fetch_assoc($result)) {
-            echo '<li>['.$row['id'].'] '.$row['name'].': '.$row['description'].' - ('.$row['latitude'].', '.$row['longitude'].') - <img src="'.$row['image'].'" width="200px" /> <a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_point&id='.$row['id'].'">Delete</a></li>';
+            ++$i;
+            echo '<tr><td>'.$i.'</td><td>'.$row['name'].'</td><td>'.$row['description'].'</td><td><small>('.number_format($row['latitude'],4).', '.number_format($row['longitude'],4).')</small></td><td><img src="'.$row['image'].'" width="200px" /></td><td><a onclick="return confirm(\'Are you sure?\')" href="/admin.php?action=delete_point&id='.$row['id'].'">Delete</a></td></td>';
         }
     }
     ?>
-</ol>
+</table>
 
 <form action="admin.php" method="GET">
     <input type="text" name="name" placeholder="name">

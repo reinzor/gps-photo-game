@@ -2,7 +2,7 @@
 $( document ).ready(function() {
     // Setup map and loop over the data points and add to map 
     GoogleMaps.initialize("map-canvas");
-    PointAPI.get(function(data) {
+    PointAPI.get("", function(data) {
         data.forEach(function(point) {
             GoogleMaps.addMarker(point.id, point.latitude, point.longitude, point.name);
         });

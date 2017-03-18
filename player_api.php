@@ -8,14 +8,14 @@ header('Content-type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {    
-    $id = mysql_real_escape_string($_POST["id"]);
-    $latitude = mysql_real_escape_string($_POST["latitude"]);
-    $longitude = mysql_real_escape_string($_POST["longitude"]);
+    $id = $mysqli->real_escape_string($_POST["id"]);
+    $latitude = $mysqli->real_escape_string($_POST["latitude"]);
+    $longitude = $mysqli->real_escape_string($_POST["longitude"]);
 
     if ($id && $latitude && $longitude) 
     {
         // Update
-        if (mysql_query("UPDATE players SET date=now(),id='". $id ."', latitude='". $latitude ."', longitude='". $longitude ."' WHERE id='".$id."'") === TRUE)
+        if ($mysqli->query("UPDATE players SET date=now(),id='". $id ."', latitude='". $latitude ."', longitude='". $longitude ."' WHERE id='".$id."'") === TRUE)
         {
             echo json_encode(array('success' => true, 'message' => "Updated location of " . $id));
         } 
@@ -32,13 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 else
 {
     // Select all players
-    $result = mysql_query("SELECT name,latitude,longitude FROM players");
+    $result = $mysqli->query("SELECT name,latitude,longitude FROM players");
     if (!$result) {
-        echo 'Could not run query: ' . mysql_error();
+        echo 'Could not run query: ' . $mysqli->error;
         exit;
     }
     $rows = array();
-    while($r = mysql_fetch_assoc($result)) {
+    while($r = $mysqli->fetch_assoc($result)) {
         $rows[] = $r;
         //echo $r['name'] . "-" . mb_detect_encoding($r['name']) . "\n";
     }

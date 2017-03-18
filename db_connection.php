@@ -1,20 +1,31 @@
 <?php
+include('./credentials.php');
 
-$servername = "HOSTNAME";
-$username = "USERNAME";
-$password = "PASSWORD";
-$databasename = "DATABASE_NAME";
+$servername = "localhost";
+$username = "root";
+$password = "Reinos12";
+$databasename = "gps_photo_game";
 
-mysql_set_charset("utf8");
-$conn = mysql_connect($servername, $username, $password);
-if (!$conn) {
-    die('Not connected : ' . mysql_error());
+$mysqli = new mysqli($servername, $username, $password, $databasename);
+
+/* check connection */
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
+
+/* change character set to utf8 */
+if (!$mysqli->set_charset("utf8")) {
+    printf("Error loading character set utf8: %s\n", $mysqli->error);
+    exit();
+} else {
+    printf("Current character set: %s\n", $mysqli->character_set_name());
 }
 
 // make foo the current db
-$db = mysql_select_db($databasename, $conn);
+$db = mysqli_select_db($mysqli, $databasename);
 if (!$db) {
-    die ('Can\'t use ' . $databasename . ' : ' . mysql_error());
+    die ('Can\'t use ' . $databasename . ' : ' . mysqli_error());
 }
 
 function isToken($token)
@@ -23,8 +34,8 @@ function isToken($token)
 
         //verification values in BD
         $query = "SELECT id FROM players WHERE code='$token'";
-        $sql = mysql_query($query);
-        if (mysql_num_rows($sql) > 0) {
+        $sql = $mysqli->query($query);
+        if ($mysqli->num_rows($sql) > 0) {
             return true;
         } else {
             return false;

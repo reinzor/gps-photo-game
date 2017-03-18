@@ -1,21 +1,21 @@
 <?php
 include('./db_connection.php');
 
-$id = mysql_real_escape_string($_GET["id"]);
-$logout = mysql_real_escape_string($_GET["logout"]);
+$id = $mysqli->real_escape_string($_GET["id"]);
+$logout = $mysqli->real_escape_string($_GET["logout"]);
 $player = null;
 if ($id)
 {
-    $result = mysql_query("SELECT * FROM players WHERE id='".$id."'");
-    if ($result && mysql_num_rows($result) == 1) 
+    $result = $mysqli->query("SELECT * FROM players WHERE id='".$id."'");
+    if ($result && $mysqli->num_rows($result) == 1) 
     {
-        $player = mysql_fetch_assoc($result);
+        $player = $mysqli->fetch_assoc($result);
 
         if ($player['open']) {
           setcookie($id, $id, time()+7200);  /* expire in 2 hours */
 
           // Update status to closed
-          mysql_query("UPDATE players SET open=0 WHERE id='".$id."'");  
+          $mysqli->query("UPDATE players SET open=0 WHERE id='".$id."'");  
         } 
         else
         {
@@ -25,7 +25,7 @@ if ($id)
             if ($logout == TRUE)
             {
               // Update status to closed
-              mysql_query("UPDATE players SET open=1 WHERE id='".$id."'"); 
+              $mysqli->query("UPDATE players SET open=1 WHERE id='".$id."'"); 
 
               setcookie($id, "deleted", time() - 3600);
               echo "Succesvol uitgelogd";
